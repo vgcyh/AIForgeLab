@@ -1,22 +1,34 @@
-function shuffle(array) {
-  let currentIndex = array.length,
-    randomIndex;
-
-  // While there are elements remaining
-  while (currentIndex !== 0) {
-    // Pick a remaining element
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
-
-    // Swap it with the current element.
-    [array[currentIndex], array[randomIndex]] = [
-      array[randomIndex],
-      array[currentIndex],
-    ];
+function minWindowSubstring(s, t) {
+  const map = new Map();
+  for (const char of t) {
+    map.set(char, (map.get(char) || 0) + 1);
   }
-
-  return array;
+  let required = map.size;
+  let left = 0;
+  let right = 0;
+  let minLen = Infinity;
+  let substrStart = 0;
+  while (right < s.length) {
+    const char = s[right];
+    if (map.has(char)) {
+      map.set(char, map.get(char) - 1);
+      if (map.get(char) === 0) required--;
+    }
+    while (required === 0) {
+      if (right - left + 1 < minLen) {
+        minLen = right - left + 1;
+        substrStart = left;
+      }
+      const leftChar = s[left];
+      if (map.has(leftChar)) {
+        map.set(leftChar, map.get(leftChar) + 1);
+        if (map.get(leftChar) > 0) required++;
+      }
+      left++;
+    }
+    right++;
+  }
+  return minLen === Infinity
+    ? ""
+    : s.substring(substrStart, substrStart + minLen);
 }
-
-const shuffledDeck = shuffle([1, 2, 3, 4, 5]);
-console.log(shuffledDeck);
