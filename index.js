@@ -1,34 +1,21 @@
-function minWindowSubstring(s, t) {
-  const map = new Map();
-  for (const char of t) {
-    map.set(char, (map.get(char) || 0) + 1);
+function addTwoNumbers(l1, l2) {
+  const dummy = new ListNode(0);
+  let p = l1,
+    q = l2,
+    curr = dummy;
+  let carry = 0;
+  while (p !== null || q !== null) {
+    const x = p !== null ? p.val : 0;
+    const y = q !== null ? q.val : 0;
+    const sum = x + y + carry;
+    carry = Math.floor(sum / 10);
+    curr.next = new ListNode(sum % 10);
+    curr = curr.next;
+    if (p !== null) p = p.next;
+    if (q !== null) q = q.next;
   }
-  let required = map.size;
-  let left = 0;
-  let right = 0;
-  let minLen = Infinity;
-  let substrStart = 0;
-  while (right < s.length) {
-    const char = s[right];
-    if (map.has(char)) {
-      map.set(char, map.get(char) - 1);
-      if (map.get(char) === 0) required--;
-    }
-    while (required === 0) {
-      if (right - left + 1 < minLen) {
-        minLen = right - left + 1;
-        substrStart = left;
-      }
-      const leftChar = s[left];
-      if (map.has(leftChar)) {
-        map.set(leftChar, map.get(leftChar) + 1);
-        if (map.get(leftChar) > 0) required++;
-      }
-      left++;
-    }
-    right++;
+  if (carry > 0) {
+    curr.next = new ListNode(carry);
   }
-  return minLen === Infinity
-    ? ""
-    : s.substring(substrStart, substrStart + minLen);
+  return dummy.next;
 }
